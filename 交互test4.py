@@ -1,12 +1,5 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
 import streamlit as st
 import pandas as pd
-import base64
 
 def convert_revenue_to_float(revenue_str):
     return float(revenue_str.replace('USD ', '').replace(',', ''))
@@ -44,129 +37,84 @@ def process_units_data(hok_units_df, country_region):
     hok_units_grouped.columns = ['Date', 'Region', 'Units']
     return hok_units_grouped
 
-# def main():
-#     st.title('GP游戏数据处理程序')
-    
-#     # 文件上传
-#     hok_users_top10_file = st.file_uploader('上传 Users Top10 文件', type='csv')
-#     hok_users_top20_file = st.file_uploader('上传 Users Top20 文件', type='csv')
-#     hok_users_top30_file = st.file_uploader('上传 Users Top30 文件', type='csv')
-#     hok_revenue_top10_file = st.file_uploader('上传 Revenue Top10 文件', type='csv')
-#     hok_revenue_top20_file = st.file_uploader('上传 Revenue Top20 文件', type='csv')
-#     hok_revenue_top30_file = st.file_uploader('上传 Revenue Top30 文件', type='csv')
-#     country_region_file = st.file_uploader('上传 国家地区对照表 文件', type='xlsx')
-    
-#     final_output_path = st.text_input('请输入最终汇总表的保存路径', '/Users/fan/Desktop/HOK/HOK_最终汇总表.xlsx')
-
-#     # 用户输入游戏名称和日期格式
-#     game_name = st.text_input('请输入游戏名称', 'HOK')
-#     date_format = st.text_input('请输入日期格式（如 %b %d, %Y 或 %b %Y 等）', '%b %d, %Y')
-    
-#     if st.button('处理数据'):
-#         try:
-#             if hok_users_top10_file is not None:
-#                 hok_users_top10 = pd.read_csv(hok_users_top10_file)
-#             if hok_users_top20_file is not None:
-#                 hok_users_top20 = pd.read_csv(hok_users_top20_file)
-#             if hok_users_top30_file is not None:
-#                 hok_users_top30 = pd.read_csv(hok_users_top30_file)
-#             if hok_revenue_top10_file is not None:
-#                 hok_revenue_top10 = pd.read_csv(hok_revenue_top10_file)
-#             if hok_revenue_top20_file is not None:
-#                 hok_revenue_top20 = pd.read_csv(hok_revenue_top20_file)
-#             if hok_revenue_top30_file is not None:
-#                 hok_revenue_top30 = pd.read_csv(hok_revenue_top30_file)
-#             if country_region_file is not None:
-#                 country_region = pd.read_excel(country_region_file)
-
-#             # 处理收入和用户数据
-#             hok_revenue_top10_grouped = process_revenue_data(hok_revenue_top10, country_region)
-#             hok_revenue_top20_grouped = process_revenue_data(hok_revenue_top20, country_region)
-#             hok_revenue_top30_grouped = process_revenue_data(hok_revenue_top30, country_region)
-#             hok_units_top10_grouped = process_units_data(hok_users_top10, country_region)
-#             hok_units_top20_grouped = process_units_data(hok_users_top20, country_region)
-#             hok_units_top30_grouped = process_units_data(hok_users_top30, country_region)
-
-#             # 合并收入数据
-#             all_revenue_data = pd.concat([hok_revenue_top10_grouped,
-#                                           hok_revenue_top20_grouped, hok_revenue_top30_grouped])
-
-#             # 合并用户数据
-#             all_units_data = pd.concat([hok_units_top10_grouped,
-#                                         hok_units_top20_grouped, hok_units_top30_grouped])
-
-#             # 按日期和区域再次分组汇总，确保没有重复数据
-#             consolidated_revenue_df = all_revenue_data.groupby(['Date', 'Region']).agg({'Gross daily revenue': 'sum'}).reset_index()
-#             consolidated_units_df = all_units_data.groupby(['Date', 'Region']).agg({'Units': 'sum'}).reset_index()
-
-#             # 合并收入和用户获取数据
-#             final_grouped_df = pd.merge(consolidated_units_df, consolidated_revenue_df, on=['Date', 'Region'], how='outer').fillna(0)
-
-#             # 添加固定的 Title 和 Platform 列
-#             final_grouped_df['Title'] = game_name
-#             final_grouped_df['Platform'] = 'GP'
-
-#             # 将列重新排列为所需的顺序
-#             final_grouped_df = final_grouped_df[['Date', 'Title', 'Platform', 'Region', 'Units', 'Gross daily revenue']]
-
-#             # 将日期转换为 datetime 格式进行排序，然后再转换回用户指定的格式
-#             final_grouped_df['Date'] = pd.to_datetime(final_grouped_df['Date'], format=date_format, errors='coerce')
-#             final_grouped_df = final_grouped_df.sort_values(by='Date')
-#             final_grouped_df['Date'] = final_grouped_df['Date'].dt.strftime(date_format)
-
-#             # 显示最终数据框
-#             st.dataframe(final_grouped_df)
-
-#             # 保存最终数据框到 Excel 文件
-#             final_grouped_df.to_excel(final_output_path, index=False)
-#             st.success(f"文件已保存到 {final_output_path}")
-#         except Exception as e:
-#             st.error(f"处理数据时发生错误: {e}")
-
-# if __name__ == '__main__':
-#     main()
-
 def main():
-    st.set_page_config(page_title="GP游戏数据处理程序", page_icon="🎮", layout="wide")
+    st.title('GP游戏数据处理程序')
     
-    st.title('🎮 GP游戏数据处理程序')
+    # 文件上传
+    hok_users_top10_file = st.file_uploader('上传 Users Top10 文件', type='csv')
+    hok_users_top20_file = st.file_uploader('上传 Users Top20 文件', type='csv')
+    hok_users_top30_file = st.file_uploader('上传 Users Top30 文件', type='csv')
+    hok_revenue_top10_file = st.file_uploader('上传 Revenue Top10 文件', type='csv')
+    hok_revenue_top20_file = st.file_uploader('上传 Revenue Top20 文件', type='csv')
+    hok_revenue_top30_file = st.file_uploader('上传 Revenue Top30 文件', type='csv')
+    country_region_file = st.file_uploader('上传 国家地区对照表 文件', type='xlsx')
     
-    st.sidebar.header("📁 文件上传")
-    
-    hok_users_top10_file = st.sidebar.file_uploader('Users Top10 文件', type='csv')
-    hok_users_top20_file = st.sidebar.file_uploader('Users Top20 文件', type='csv')
-    hok_users_top30_file = st.sidebar.file_uploader('Users Top30 文件', type='csv')
-    hok_revenue_top10_file = st.sidebar.file_uploader('Revenue Top10 文件', type='csv')
-    hok_revenue_top20_file = st.sidebar.file_uploader('Revenue Top20 文件', type='csv')
-    hok_revenue_top30_file = st.sidebar.file_uploader('Revenue Top30 文件', type='csv')
-    country_region_file = st.sidebar.file_uploader('国家地区对照表文件', type='xlsx')
-    
-    st.sidebar.header("⚙️ 设置")
-    game_name = st.sidebar.text_input('游戏名称', 'HOK')
-    date_format = st.sidebar.text_input('日期格式', '%b %d, %Y')
-    
-    if st.sidebar.button('处理数据', key='process'):
-        if not all([hok_users_top10_file, hok_users_top20_file, hok_users_top30_file,
-                    hok_revenue_top10_file, hok_revenue_top20_file, hok_revenue_top30_file,
-                    country_region_file]):
-            st.error('请上传所有必要的文件')
-        else:
-            try:
-                # ... [您原有的数据处理代码] ...
-                
-                st.success("数据处理完成！")
-                st.dataframe(final_grouped_df)
-                
-                # 提供下载链接
-                csv = final_grouped_df.to_csv(index=False)
-                b64 = base64.b64encode(csv.encode()).decode()
-                href = f'下载CSV文件'
-                st.markdown(href, unsafe_allow_html=True)
-                
-            except Exception as e:
-                st.error(f"处理数据时发生错误: {e}")
+    final_output_path = st.text_input('请输入最终汇总表的保存路径', '/Users/fan/Desktop/HOK/HOK_最终汇总表.xlsx')
 
-    st.sidebar.info('使用说明：上传所有必要的文件，设置游戏名称和日期格式，然后点击"处理数据"按钮。')
+    # 用户输入游戏名称和日期格式
+    game_name = st.text_input('请输入游戏名称', 'HOK')
+    date_format = st.text_input('请输入日期格式（如 %b %d, %Y 或 %b %Y 等）', '%b %d, %Y')
+    
+    if st.button('处理数据'):
+        try:
+            if hok_users_top10_file is not None:
+                hok_users_top10 = pd.read_csv(hok_users_top10_file)
+            if hok_users_top20_file is not None:
+                hok_users_top20 = pd.read_csv(hok_users_top20_file)
+            if hok_users_top30_file is not None:
+                hok_users_top30 = pd.read_csv(hok_users_top30_file)
+            if hok_revenue_top10_file is not None:
+                hok_revenue_top10 = pd.read_csv(hok_revenue_top10_file)
+            if hok_revenue_top20_file is not None:
+                hok_revenue_top20 = pd.read_csv(hok_revenue_top20_file)
+            if hok_revenue_top30_file is not None:
+                hok_revenue_top30 = pd.read_csv(hok_revenue_top30_file)
+            if country_region_file is not None:
+                country_region = pd.read_excel(country_region_file)
+
+            # 处理收入和用户数据
+            hok_revenue_top10_grouped = process_revenue_data(hok_revenue_top10, country_region)
+            hok_revenue_top20_grouped = process_revenue_data(hok_revenue_top20, country_region)
+            hok_revenue_top30_grouped = process_revenue_data(hok_revenue_top30, country_region)
+            hok_units_top10_grouped = process_units_data(hok_users_top10, country_region)
+            hok_units_top20_grouped = process_units_data(hok_users_top20, country_region)
+            hok_units_top30_grouped = process_units_data(hok_users_top30, country_region)
+
+            # 合并收入数据
+            all_revenue_data = pd.concat([hok_revenue_top10_grouped,
+                                          hok_revenue_top20_grouped, hok_revenue_top30_grouped])
+
+            # 合并用户数据
+            all_units_data = pd.concat([hok_units_top10_grouped,
+                                        hok_units_top20_grouped, hok_units_top30_grouped])
+
+            # 按日期和区域再次分组汇总，确保没有重复数据
+            consolidated_revenue_df = all_revenue_data.groupby(['Date', 'Region']).agg({'Gross daily revenue': 'sum'}).reset_index()
+            consolidated_units_df = all_units_data.groupby(['Date', 'Region']).agg({'Units': 'sum'}).reset_index()
+
+            # 合并收入和用户获取数据
+            final_grouped_df = pd.merge(consolidated_units_df, consolidated_revenue_df, on=['Date', 'Region'], how='outer').fillna(0)
+
+            # 添加固定的 Title 和 Platform 列
+            final_grouped_df['Title'] = game_name
+            final_grouped_df['Platform'] = 'GP'
+
+            # 将列重新排列为所需的顺序
+            final_grouped_df = final_grouped_df[['Date', 'Title', 'Platform', 'Region', 'Units', 'Gross daily revenue']]
+
+            # 将日期转换为 datetime 格式进行排序，然后再转换回用户指定的格式
+            final_grouped_df['Date'] = pd.to_datetime(final_grouped_df['Date'], format=date_format, errors='coerce')
+            final_grouped_df = final_grouped_df.sort_values(by='Date')
+            final_grouped_df['Date'] = final_grouped_df['Date'].dt.strftime(date_format)
+
+            # 显示最终数据框
+            st.dataframe(final_grouped_df)
+
+            # 保存最终数据框到 Excel 文件
+            final_grouped_df.to_excel(final_output_path, index=False)
+            st.success(f"文件已保存到 {final_output_path}")
+        except Exception as e:
+            st.error(f"处理数据时发生错误: {e}")
 
 if __name__ == '__main__':
     main()
